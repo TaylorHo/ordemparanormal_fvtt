@@ -92,7 +92,10 @@ Hooks.once("init", function () {
 	utils.preloadHandlebarsTemplates();
 
 	// Change the logo of Foundry for Ordem Paranormal logo.
-	if (navigator.onLine) $("#logo").attr("src", "https://i.imgur.com/TTrDGM4.png");
+	if (navigator.onLine) {
+		const logo = document.querySelector("#logo");
+		if (logo) logo.src = "https://i.imgur.com/TTrDGM4.png";
+	}
 });
 
 Hooks.once("ready", function () {
@@ -135,7 +138,7 @@ function _configureFonts() {
 				},
 				{
 					urls: ["systems/ordemparanormal/media/fonts/warnock-pro/WarnockPro-Semibold.otf"],
-					weight: "semibold",
+					weight: "bold",
 				},
 				{
 					urls: ["systems/ordemparanormal/media/fonts/warnock-pro/WarnockPro-SemiboldItSubh.otf"],

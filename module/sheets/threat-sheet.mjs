@@ -114,8 +114,10 @@ export class OrdemThreatSheet extends api.HandlebarsApplicationMixin(sheets.Acto
 			button.addEventListener("click", this._onAdjustInput.bind(this));
 		}
 
-		const html = $(this.element);
-		html.find(".compendium-skill").on("contextmenu", this._onOpenCompendiumEntry.bind(this));
+		// V13 DOM API (no jQuery)
+		for (const compendiumSkill of this.element.querySelectorAll(".compendium-skill")) {
+			compendiumSkill.addEventListener("contextmenu", this._onOpenCompendiumEntry.bind(this));
+		}
 	}
 
 	/** * Prepara os dados para o Handlebars
@@ -380,7 +382,8 @@ export class OrdemThreatSheet extends api.HandlebarsApplicationMixin(sheets.Acto
 		const attr = target.dataset.edit;
 		const current = foundry.utils.getProperty(this.document, attr);
 		const { img } = this.document.constructor.getDefaultArtwork?.(this.document.toObject()) ?? {};
-		const fp = new FilePicker({
+		// V13: Use namespaced FilePicker
+		const fp = new foundry.applications.apps.FilePicker({
 			current,
 			type: "image",
 			redirectToRoot: img ? [img] : [],
@@ -604,13 +607,13 @@ export class OrdemThreatSheet extends api.HandlebarsApplicationMixin(sheets.Acto
 	/** */
 	static async #onOpenResistanceConfig(event, target) {
 		event.preventDefault();
-		new ResistanceConfig(this.document).render(true);
+		new ResistanceConfig({ document: this.document }).render(true);
 	}
 
 	/** */
 	static async #onOpenTraitsConfig(event, target) {
 		event.preventDefault();
-		new TraitsConfig(this.document).render(true);
+		new TraitsConfig({ document: this.document }).render(true);
 	}
 
 	/* -------------------------------------------- */
@@ -654,7 +657,8 @@ export class OrdemThreatSheet extends api.HandlebarsApplicationMixin(sheets.Acto
 
 	/** */
 	async _onDrop(event) {
-		const data = TextEditor.getDragEventData(event);
+		// V13: Use namespaced TextEditor
+		const data = foundry.applications.ux.TextEditor.implementation.getDragEventData(event);
 		if (!this.actor.isOwner) return false;
 		if (data.type === "Item") return this._onDropItem(event, data);
 		if (data.type === "ActiveEffect") return this._onDropActiveEffect(event, data);

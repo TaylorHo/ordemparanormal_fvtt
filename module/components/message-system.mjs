@@ -58,14 +58,15 @@ const isCurrent = (msg) => {
 const displayPrompt = (title, content, i, messages) => {
 	content = content.replace("{name}", game.user.name);
 
-	const dialogOptions = {
-		width: 800,
-		height: 630,
-		classes: ["ordemparanormal", "no-scroll"],
-	};
-
 	const config = {
-		title: title,
+		window: {
+			title: title,
+		},
+		position: {
+			width: 800,
+			height: 630,
+		},
+		classes: ["ordemparanormal", "no-scroll"],
 		content: `
 			<section class='ordemparanormal grid grid-2col'>
 				<aside class='sidebar scroll content-dialog'>
@@ -93,8 +94,9 @@ const displayPrompt = (title, content, i, messages) => {
 				</div>
 			</section>
 			<footer style="position:absolute; bottom: 0; width: 100%; left: 0; padding: 0px 8px; border-top: 1px #00000030 solid;"><p>Você pode desativar as notas de atualização nas configurações do sistema.</p></footer>`,
-		buttons: {
-			previous: {
+		buttons: [
+			{
+				action: "previous",
 				icon: '<i class="fas fa-arrow-left"></i>',
 				label: "Atualização Anterior",
 				callback: async () => {
@@ -102,7 +104,8 @@ const displayPrompt = (title, content, i, messages) => {
 					if (messages[b]) displayPrompt(messages[b].title, messages[b].content, b, messages);
 				},
 			},
-			next: {
+			{
+				action: "next",
 				icon: "",
 				label: 'Próxima Atualização <i class="fas fa-arrow-right"></i>',
 				callback: async () => {
@@ -110,19 +113,12 @@ const displayPrompt = (title, content, i, messages) => {
 					if (messages[b]) displayPrompt(messages[b].title, messages[b].content, b, messages);
 				},
 			},
-		},
+		],
 	};
 
-	const d = new Dialog(config, dialogOptions);
+	// V13: Use DialogV2
+	const d = new foundry.applications.api.DialogV2(config);
 	return d.render(true);
-
-	// return Dialog.prompt({
-	// 	title: title,
-	// 	content: `<section class='grid grid-2col'>${content}</section>`,
-	// 	// label: 'Understood!',
-	// 	options: { width: 400, height: 400, classes: [SYSTEM_NAME, 'dialog'] },
-	// 	// callback: () => setDisplayed(title),
-	// });
 };
 
 const sendToChat = (title, content) => {
